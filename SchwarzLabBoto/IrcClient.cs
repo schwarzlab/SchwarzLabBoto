@@ -5,6 +5,10 @@ using System.Net.Sockets;
 
 namespace SchwarzLaboBoto.Clients
 {
+    /// <summary>
+    /// Simple IRC class
+    /// could be used for simpler bots taht only want to parse text and do commands
+    /// </summary>
     public class IrcClient
     {
         private readonly string userName;

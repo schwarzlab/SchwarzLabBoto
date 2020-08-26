@@ -20,7 +20,7 @@ namespace SchwarzLaboBoto.BotService
                 .ConfigureServices((hostContext, services) =>
                 {
                     
-                    services.AddHostedService<Worker>();
+                    services.AddHostedService<BotWorker>();
                 });
     }
 }

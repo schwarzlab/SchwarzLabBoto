@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchwarzLab.Clients", "SchwarzLabBoto\SchwarzLab.Clients.csproj", "{958D6290-B98E-452C-B246-00348F2350B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchwarzLaboBoto.BotService", "SchwarzLaboBoto.BotService\SchwarzLaboBoto.BotService.csproj", "{895238E3-1B9B-4055-9E9D-760F9CE69A12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchwarzLaboBoto.BotService", "SchwarzLaboBoto.BotService\SchwarzLaboBoto.BotService.csproj", "{895238E3-1B9B-4055-9E9D-760F9CE69A12}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2017135E-CA08-40BA-873A-41EABA557345}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
