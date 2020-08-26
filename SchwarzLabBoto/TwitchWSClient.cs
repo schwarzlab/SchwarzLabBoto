@@ -11,6 +11,7 @@ using SchwarzLab.Clients.Events;
 
 namespace SchwarzLaboBoto.Clients
 {
+    //a lot of this code is based on project "twitchlib" at https://github.com/TwitchLib
     public class TwitchWSClient : IDisposable
     {
         private ClientWebSocket client;
