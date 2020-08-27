@@ -11,6 +11,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SchwarzLab.Clients.Events;
 using SchwarzLaboBoto.Clients;
+using SchwarzLaboBoto.BotService.Extensions;
+using SchwarzLaboBoto.BotService.Models;
 
 namespace SchwarzLaboBoto.BotService
 {
@@ -65,7 +67,25 @@ namespace SchwarzLaboBoto.BotService
         private object ParseMessage(string message)
         {
             _logger.LogInformation($"In parser {message}");
-            return new object();
+            var indexTagStart = message.IndexOf('@');
+            var indexTagEnd = message.IndexOf(' ');
+            Dictionary<string, string> tags = new Dictionary<string, string>();
+            string tail;
+            if (indexTagStart > -1 && message.Contains("PRIVMSG"))
+            {
+                var rawTags = message.Substring(indexTagStart + 1, indexTagEnd - 1).Split(';');
+                foreach(var rawTag in rawTags)
+                {
+                    var tag = rawTag.Split('=');
+                    var key = tag[0];
+                    var value = tag[1];
+                    if(!string.IsNullOrEmpty(key))
+                        tags.Add(key, value);
+                }
+                tail = message.Substring(indexTagEnd + 1);
+            }
+            PrivMessageModel privMessage = tags.ToObject<PrivMessageModel>();
+            return privMessage;
         }
     }
 }
