@@ -62,15 +62,50 @@ namespace SchwarzLaboBoto.BotService
         {
             _logger.LogInformation($"Message recieved: parsing");
             var parsedMessage = ParseMessage(e.Message);
+            HandleMessage(parsedMessage);
         }
 
-        private object ParseMessage(string message)
+        private void HandleMessage(ITwitchMessage parsedMessage)
+        {
+            if (string.IsNullOrEmpty(parsedMessage.Message) ||
+                 string.IsNullOrWhiteSpace(parsedMessage.Message))
+            {
+                return;
+            }
+            if (parsedMessage.Message.StartsWith("!") 
+                && parsedMessage.MessageType == TwtichMessageTypes.privmessage)
+            {
+                string msg = parsedMessage.Message;
+                //splitting command from args
+                //if there insn't an arg then it is a command that needs the sending username
+                string command = msg.Contains(" ") ?
+                    msg.Substring(1, msg.IndexOf(" ")).Trim() : msg.Substring(1).Trim();
+                string arg = msg.Contains(" ") ?
+                    msg.Substring( msg.IndexOf(" ")+1).Trim() : parsedMessage.Username.Trim();
+                HandleCommand(command, arg);
+            }
+        }
+
+        private void HandleCommand(string command, string arg)
+        {
+            switch(command)
+            {
+                case "dice":
+                    var rand = new Random();
+                    int roll = rand.Next(1, 7);
+                    twitchClient.SendTwitchIRCMessage($"{arg} you rolled a {roll}");
+                    break;
+            }
+        }
+
+        private ITwitchMessage ParseMessage(string message)
         {
             _logger.LogInformation($"In parser {message}");
             var indexTagStart = message.IndexOf('@');
             var indexTagEnd = message.IndexOf(' ');
             Dictionary<string, string> tags = new Dictionary<string, string>();
             string tail;
+            ITwitchMessage retval = new PrivMessageModel();
             if (indexTagStart > -1 && message.Contains("PRIVMSG"))
             {
                 var rawTags = message.Substring(indexTagStart + 1, indexTagEnd - 1).Split(';');
@@ -83,9 +118,21 @@ namespace SchwarzLaboBoto.BotService
                         tags.Add(key, value);
                 }
                 tail = message.Substring(indexTagEnd + 1);
+                retval = new PrivMessageModel {
+                    Username = tags["display-name"],
+                    MessageId = tags["id"],
+                    MessageType = TwtichMessageTypes.privmessage
+                };
+                //why doesn't this work in the intializer???
+                var msg = tail.Substring(tail.IndexOf(" :") + 2);
+                var endIdx = msg.IndexOf(Environment.NewLine);
+                msg = msg.Remove(endIdx);
+                retval.Message = msg;
             }
-            PrivMessageModel privMessage = tags.ToObject<PrivMessageModel>();
-            return privMessage;
+            //todo: figure how to actually parse since dict to obj isn't going to work here.
+            //PrivMessageModel privMessage = tags.ToObject<PrivMessageModel>();
+            
+            return retval;
         }
     }
 }
